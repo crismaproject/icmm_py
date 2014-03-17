@@ -1,15 +1,15 @@
-__author__="mscholl"
-__date__ ="$Mar 13, 2014 1:49:04 PM$"
+__author__ = "mscholl"
+__date__  = "$Mar 13, 2014 1:49:04 PM$"
 
 from setuptools import setup,find_packages
 
 setup (
-  name = 'icmm',
+  name = 'icmm_py',
   version = '0.1',
   packages = find_packages(),
 
   # Declare your packages' dependencies here, for eg:
-  install_requires=['foo>=3'],
+  install_requires=['requests>=2'],
 
   # Fill in these to make your Egg ready for upload to
   # PyPI
@@ -22,6 +22,4 @@ setup (
   long_description= 'Helpers and tools for use with the CRISMA ICMM service',
 
   # could also include long_description, download_url, classifiers, etc.
-
-  
 )

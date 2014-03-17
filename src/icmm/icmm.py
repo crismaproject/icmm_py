@@ -1,11 +1,9 @@
+import json
 import requests
+import re
 
 __author__="mscholl"
 __date__ ="$14.03.2014 11:44:54$"
-
-
-
-_api='http://crisma.cismet.de/economic-impact/icmm_api/CRISMA.worldstates/'
 
 def get_worldstate(apiurl, domain, id):
     payload = {'deduplicate': 'true'}
@@ -19,19 +17,19 @@ def get_worldstate(apiurl, domain, id):
 def put_worldstate(apiurl, domain, worldstate):
     result = requests.put(
         '{}/{}.worldstates/{}'.format(apiurl, domain, worldstate['id']),
-        data = worldstate,                         
+        data = json.dumps(worldstate),                         
         headers = {'content-type':'application/json'}
         )
     
-    return result.status_code
+    return result
 
 def get_next_id(apiurl, domain, entityinfo):
     params = {'limit' :  999999999}
     headers = {'content-type': 'application/json'}
     response = requests.get(
         "{}/{}.{}".format(apiurl, domain, entityinfo), 
-        params=params, 
-        headers=headers
+        params = params, 
+        headers = headers
         ) 
 
     if response.status_code != 200:
@@ -49,12 +47,26 @@ def get_next_id(apiurl, domain, entityinfo):
                 
     return maxid + 1
 
-class ICMMHelper():
-    def __init__(self, apiurl, domain):
-        self.apiurl = apiurl
-        self.domain = domain
-    def __str__(self):
-        return repr('ICMMHelper: [' + self + ']')
+def create_ref(domain, entityinfo, id):
+    return '/{}.{}/{}'.format(domain, entityinfo, id)
     
-    def get_worldstate(id):
-        return icmm.get_worldstate(self.apiurl, self.domain, id)
+
+class ICMMHelper:
+    def __init__(self, apiurl, domain):
+        self._apiurl = apiurl
+        self._domain = domain
+        
+    def __str__(self):
+        return repr('ICMMHelper: [apiurl=' + self._apiurl + '|domain=' + self._domain + ']')
+    
+    def create_ref(self, entityinfo, id):
+        return create_ref(self._domain, entityinfo, id)
+        
+    def get_worldstate(self, id):
+        return get_worldstate(self._apiurl, self._domain, id)
+        
+    def get_next_id(self, entityinfo):
+        return get_next_id(self._apiurl, self._domain, entityinfo)
+    
+    def put_worldstate(self, worldstate):
+        return put_worldstate(self._apiurl, self._domain, worldstate)  
